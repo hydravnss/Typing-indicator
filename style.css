@@ -1,84 +1,78 @@
 /* =========================================================
-   TYPING INDICATOR
-   iMessage Style
+   TYPING INDICATOR — iMESSAGE STYLE
    ========================================================= */
 
 #hydra-typing-indicator {
     position: relative;
 
-    width: fit-content;
-    height: 64px;
+    width: 82px;
+    height: 51px;
 
-    margin-left: 14px;
+    margin-left: 12px;
     margin-top: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 
     opacity: 0;
-
-    transform:
-        translateY(8px)
-        scale(0.96);
+    transform: scale(0.92);
 
     transition:
-        opacity 0.15s ease,
-        transform 0.15s ease;
+        opacity 0.12s ease,
+        transform 0.12s ease;
 
     pointer-events: none;
-
     z-index: 100;
 }
 
 
 /* =========================================================
-   VISIBLE
+   APPEAR
    ========================================================= */
 
 #hydra-typing-indicator.visible {
     opacity: 1;
-
-    transform:
-        translateY(0)
-        scale(1);
+    transform: scale(1);
 }
 
 
 /* =========================================================
-   MAIN BUBBLE
+   MAIN iMESSAGE BUBBLE
    ========================================================= */
 
 .hydra-typing-bubble {
-    position: relative;
+    position: absolute;
 
-    width: 94px;
-    height: 54px;
+    left: 9px;
+    top: 0;
 
-    border-radius: 30px;
+    width: 73px;
+    height: 45px;
 
     background: #e5e5ea;
 
-    display: flex;
+    border-radius: 26px;
 
+    display: flex;
     align-items: center;
     justify-content: center;
 
-    gap: 7px;
+    gap: 6px;
 
     box-sizing: border-box;
 }
 
 
 /* =========================================================
-   LARGE TAIL
+   iMESSAGE BUBBLE TAIL
    ========================================================= */
 
 .hydra-typing-tail-large {
     position: absolute;
 
-    left: 2px;
-    bottom: -4px;
+    left: 10px;
+    top: 31px;
 
-    width: 25px;
-    height: 24px;
+    width: 20px;
+    height: 17px;
 
     background: #e5e5ea;
 
@@ -86,24 +80,26 @@
         0
         0
         0
-        22px;
+        17px;
 
-    transform: rotate(18deg);
+    transform: rotate(15deg);
+
+    z-index: -1;
 }
 
 
 /* =========================================================
-   SMALL TAIL
+   SMALL BUBBLE
    ========================================================= */
 
 .hydra-typing-tail-small {
     position: absolute;
 
-    left: -12px;
-    bottom: -15px;
+    left: 0;
+    bottom: 0;
 
-    width: 17px;
-    height: 17px;
+    width: 13px;
+    height: 13px;
 
     background: #e5e5ea;
 
@@ -112,27 +108,32 @@
 
 
 /* =========================================================
-   DOTS
+   THREE DOTS
    ========================================================= */
 
 .hydra-typing-dot {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
+
+    min-width: 8px;
+    min-height: 8px;
 
     border-radius: 50%;
 
     background: #8e8e93;
 
+    opacity: 0.45;
+
     animation:
-        hydraTyping
-        1.4s
+        hydra-typing-blink
+        1.2s
         infinite
         ease-in-out;
 }
 
 
 /* =========================================================
-   DOT DELAYS
+   DOT TIMING
    ========================================================= */
 
 .hydra-typing-dot.dot-1 {
@@ -140,30 +141,34 @@
 }
 
 .hydra-typing-dot.dot-2 {
-    animation-delay: 0.15s;
+    animation-delay: 0.18s;
 }
 
 .hydra-typing-dot.dot-3 {
-    animation-delay: 0.3s;
+    animation-delay: 0.36s;
 }
 
 
 /* =========================================================
-   ANIMATION
+   iMESSAGE BLINK
    ========================================================= */
 
-@keyframes hydraTyping {
+@keyframes hydra-typing-blink {
 
-    0%,
-    60%,
-    100% {
-        transform: translateY(0);
-        opacity: 0.55;
+    0% {
+        opacity: 0.35;
     }
 
-    30% {
-        transform: translateY(-3px);
+    20% {
         opacity: 1;
+    }
+
+    40% {
+        opacity: 0.35;
+    }
+
+    100% {
+        opacity: 0.35;
     }
 }
 
