@@ -1,36 +1,61 @@
 /* =========================================================
-   TYPING INDICATOR — iMESSAGE STYLE
+   TYPING INDICATOR
+   iMESSAGE — SMALL / COMPACT
+   ========================================================= */
+
+
+/* =========================================================
+   CONTAINER
    ========================================================= */
 
 #hydra-typing-indicator {
     position: relative;
 
-    width: 82px;
-    height: 51px;
+    /* Petit indicateur */
+    width: 72px;
+    height: 48px;
+
+    /* IMPORTANT :
+       il reste dans le flux du chat et apparaît
+       après le dernier message */
+    display: block;
+    clear: both;
 
     margin-left: 12px;
-    margin-top: 8px;
-    margin-bottom: 12px;
+    margin-right: auto;
 
+    margin-top: 7px;
+    margin-bottom: 8px;
+
+    /* Animation d'apparition */
     opacity: 0;
-    transform: scale(0.92);
+
+    transform:
+        translateY(7px)
+        scale(0.82);
+
+    transform-origin: left bottom;
 
     transition:
-        opacity 0.12s ease,
-        transform 0.12s ease;
+        opacity 0.18s ease-out,
+        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 
     pointer-events: none;
-    z-index: 100;
+
+    z-index: 20;
 }
 
 
 /* =========================================================
-   APPEAR
+   APPEAR ANIMATION
    ========================================================= */
 
 #hydra-typing-indicator.visible {
     opacity: 1;
-    transform: scale(1);
+
+    transform:
+        translateY(0)
+        scale(1);
 }
 
 
@@ -41,38 +66,39 @@
 .hydra-typing-bubble {
     position: absolute;
 
-    left: 9px;
+    left: 8px;
     top: 0;
 
-    width: 73px;
-    height: 45px;
+    width: 63px;
+    height: 39px;
 
     background: #e5e5ea;
 
-    border-radius: 26px;
+    border-radius: 23px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
-    gap: 6px;
+    gap: 5px;
 
     box-sizing: border-box;
 }
 
 
 /* =========================================================
-   iMESSAGE BUBBLE TAIL
+   iMESSAGE TAIL
    ========================================================= */
 
 .hydra-typing-tail-large {
     position: absolute;
 
-    left: 10px;
-    top: 31px;
+    left: 7px;
+    top: 28px;
 
-    width: 20px;
-    height: 17px;
+    width: 17px;
+    height: 15px;
 
     background: #e5e5ea;
 
@@ -80,16 +106,16 @@
         0
         0
         0
-        17px;
+        15px;
 
-    transform: rotate(15deg);
+    transform: rotate(18deg);
 
     z-index: -1;
 }
 
 
 /* =========================================================
-   SMALL BUBBLE
+   SMALL ROUND DOT
    ========================================================= */
 
 .hydra-typing-tail-small {
@@ -98,8 +124,8 @@
     left: 0;
     bottom: 0;
 
-    width: 13px;
-    height: 13px;
+    width: 10px;
+    height: 10px;
 
     background: #e5e5ea;
 
@@ -112,28 +138,30 @@
    ========================================================= */
 
 .hydra-typing-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 
-    min-width: 8px;
-    min-height: 8px;
+    min-width: 6px;
+    min-height: 6px;
 
     border-radius: 50%;
 
     background: #8e8e93;
 
-    opacity: 0.45;
+    opacity: 0.4;
+
+    transform: scale(0.9);
 
     animation:
-        hydra-typing-blink
-        1.2s
+        hydra-imessage-blink
+        1.25s
         infinite
         ease-in-out;
 }
 
 
 /* =========================================================
-   DOT TIMING
+   DOT DELAYS
    ========================================================= */
 
 .hydra-typing-dot.dot-1 {
@@ -141,34 +169,38 @@
 }
 
 .hydra-typing-dot.dot-2 {
-    animation-delay: 0.18s;
+    animation-delay: 0.17s;
 }
 
 .hydra-typing-dot.dot-3 {
-    animation-delay: 0.36s;
+    animation-delay: 0.34s;
 }
 
 
 /* =========================================================
-   iMESSAGE BLINK
+   iMESSAGE DOT BLINK
    ========================================================= */
 
-@keyframes hydra-typing-blink {
+@keyframes hydra-imessage-blink {
 
     0% {
         opacity: 0.35;
+        transform: scale(0.85);
     }
 
     20% {
         opacity: 1;
+        transform: scale(1);
     }
 
     40% {
         opacity: 0.35;
+        transform: scale(0.85);
     }
 
     100% {
         opacity: 0.35;
+        transform: scale(0.85);
     }
 }
 
@@ -192,8 +224,28 @@ body.dark-mode
 }
 
 
+/* Les points restent gris comme iMessage */
+
 body.dark-mode
 #hydra-typing-indicator
 .hydra-typing-dot {
     background: #8e8e93;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 600px) {
+
+    #hydra-typing-indicator {
+        width: 72px;
+        height: 48px;
+
+        margin-left: 12px;
+        margin-top: 6px;
+        margin-bottom: 8px;
+    }
+
 }
