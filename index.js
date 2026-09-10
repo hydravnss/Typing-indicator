@@ -1,3 +1,9 @@
+/* =========================================================
+   TYPING INDICATOR
+   SillyTavern Extension
+   iMessage-style typing bubble
+   ========================================================= */
+
 import {
     eventSource,
     event_types,
@@ -10,14 +16,13 @@ import {
 
 
 /* =========================================================
-   TYPING INDICATOR
-   iMessage-style typing indicator for SillyTavern
+   CONFIG
    ========================================================= */
 
-const extension_name = 'typing-indicator';
-const typing_id = 'hydra-typing-indicator';
+const EXTENSION_NAME = 'typing-indicator';
+const INDICATOR_ID = 'hydra-typing-indicator';
 
-const default_settings = {
+const DEFAULT_SETTINGS = {
     enabled: true,
 };
 
@@ -26,209 +31,503 @@ const default_settings = {
    SETTINGS
    ========================================================= */
 
-function load_settings() {
-    if (!extension_settings[extension_name]) {
-        extension_settings[extension_name] = structuredClone(default_settings);
+function loadSettings() {
+    if (!extension_settings[EXTENSION_NAME]) {
+        extension_settings[EXTENSION_NAME] = {
+            ...DEFAULT_SETTINGS,
+        };
     }
 
-    for (const key of Object.keys(default_settings)) {
-        if (extension_settings[extension_name][key] === undefined) {
-            extension_settings[extension_name][key] = default_settings[key];
-        }
+    if (
+        extension_settings[EXTENSION_NAME].enabled === undefined
+    ) {
+        extension_settings[EXTENSION_NAME].enabled = true;
     }
 }
 
 
-function is_enabled() {
-    return extension_settings[extension_name]?.enabled ?? true;
+function isEnabled() {
+    return extension_settings[EXTENSION_NAME]?.enabled !== false;
 }
 
 
 /* =========================================================
-   CREATE TYPING INDICATOR
+   SVG BUBBLE
    ========================================================= */
 
-function create_typing_indicator() {
-    if (!is_enabled()) {
+function createBubbleSVG() {
+    return `
+        <svg
+            class="hydra-typing-svg"
+            viewBox="0 0 92 70"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+        >
+
+            <!-- Main iMessage bubble -->
+            <path
+                class="hydra-typing-shape"
+                d="
+                    M 18 3
+                    C 8 5 2 13 2 25
+                    C 2 38 9 48 20 51
+                    C 25 53 31 53 36 53
+                    C 47 58 60 61 70 61
+                    C 82 61 90 51 90 37
+                    C 90 20 82 5 68 3
+                    C 54 1 31 1 18 3
+                    Z
+                "
+            />
+
+            <!-- Tail -->
+            <path
+                class="hydra-typing-shape"
+                d="
+                    M 20 47
+                    C 18 54 13 59 8 61
+                    C 13 61 19 58 24 53
+                    Z
+                "
+            />
+
+            <!-- Small detached bubble -->
+            <circle
+                class="hydra-typing-shape"
+                cx="7"
+                cy="67"
+                r="5"
+            />
+
+        </svg>
+    `;
+}
+
+
+/* =========================================================
+   CREATE INDICATOR
+   ========================================================= */
+
+function createTypingIndicator() {
+
+    if (!isEnabled()) {
         return;
     }
 
-    remove_typing_indicator(true);
+    removeTypingIndicator(true);
+
+
+    /* -----------------------------------------------------
+       Find chat
+       ----------------------------------------------------- */
 
     const chat = document.querySelector('#chat');
 
     if (!chat) {
-        console.warn(`[${extension_name}] #chat introuvable.`);
+        console.warn(
+            `[${EXTENSION_NAME}] #chat introuvable.`
+        );
+
         return;
     }
 
+
+    /* -----------------------------------------------------
+       Find last bot message
+       ----------------------------------------------------- */
+
+    const messages = [
+        ...chat.querySelectorAll('.mes')
+    ];
+
+    let lastBotMessage = null;
+
+    for (let i = messages.length - 1; i >= 0; i--) {
+
+        const message = messages[i];
+
+        /*
+         * SillyTavern:
+         * mes[is_user="false"] = bot message
+         */
+
+        if (message.getAttribute('is_user') !== 'true') {
+            lastBotMessage = message;
+            break;
+        }
+    }
+
+
+    /* -----------------------------------------------------
+       Create container
+       ----------------------------------------------------- */
+
     const indicator = document.createElement('div');
 
-    indicator.id = typing_id;
-    indicator.className = 'hydra-typing-indicator';
+    indicator.id = INDICATOR_ID;
+
+    indicator.className =
+        'hydra-typing-indicator';
+
+
+    /* -----------------------------------------------------
+       SVG + animated dots
+       ----------------------------------------------------- */
 
     indicator.innerHTML = `
+
         <div class="hydra-typing-bubble">
-            <span class="hydra-typing-dot dot-1"></span>
-            <span class="hydra-typing-dot dot-2"></span>
-            <span class="hydra-typing-dot dot-3"></span>
+
+            ${createBubbleSVG()}
+
+            <div class="hydra-typing-dots">
+
+                <span
+                    class="hydra-typing-dot dot-1"
+                ></span>
+
+                <span
+                    class="hydra-typing-dot dot-2"
+                ></span>
+
+                <span
+                    class="hydra-typing-dot dot-3"
+                ></span>
+
+            </div>
+
         </div>
 
-        <div class="hydra-typing-tail-large"></div>
-        <div class="hydra-typing-tail-small"></div>
     `;
 
-    chat.appendChild(indicator);
+
+    /* =====================================================
+       INSERT POSITION
+       ===================================================== */
+
+    if (lastBotMessage) {
+
+        /*
+         * IMPORTANT:
+         * Put the indicator DIRECTLY AFTER the bot message.
+         */
+
+        lastBotMessage.insertAdjacentElement(
+            'afterend',
+            indicator
+        );
+
+    } else {
+
+        /*
+         * Fallback if no bot message exists.
+         */
+
+        chat.appendChild(indicator);
+    }
+
+
+    /* =====================================================
+       APPEAR ANIMATION
+       ===================================================== */
 
     requestAnimationFrame(() => {
-        indicator.classList.add('visible');
+
+        requestAnimationFrame(() => {
+
+            indicator.classList.add('visible');
+
+        });
+
+    });
+
+
+    /* =====================================================
+       KEEP IT VISIBLE
+       ===================================================== */
+
+    setTimeout(() => {
+
+        if (!document.body.contains(indicator)) {
+            return;
+        }
 
         indicator.scrollIntoView({
             behavior: 'smooth',
-            block: 'end',
+            block: 'nearest',
         });
-    });
+
+    }, 80);
 }
 
 
 /* =========================================================
-   REMOVE TYPING INDICATOR
+   REMOVE INDICATOR
    ========================================================= */
 
-function remove_typing_indicator(immediate = false) {
-    const indicator = document.getElementById(typing_id);
+function removeTypingIndicator(immediate = false) {
+
+    const indicator =
+        document.getElementById(INDICATOR_ID);
 
     if (!indicator) {
         return;
     }
 
+
+    /* -----------------------------------------------------
+       Immediate removal
+       ----------------------------------------------------- */
+
     if (immediate) {
+
         indicator.remove();
+
         return;
     }
 
+
+    /* -----------------------------------------------------
+       Exit animation
+       ----------------------------------------------------- */
+
     indicator.classList.remove('visible');
 
+
     setTimeout(() => {
-        indicator.remove();
-    }, 150);
+
+        if (indicator.parentNode) {
+            indicator.remove();
+        }
+
+    }, 180);
 }
 
 
 /* =========================================================
-   EXTENSION SETTINGS UI
+   GENERATION START
    ========================================================= */
 
-function create_settings_ui() {
-    const extensions_settings = document.querySelector(
-        '#extensions_settings'
-    );
+function onGenerationStarted() {
 
-    if (!extensions_settings) {
+    if (!isEnabled()) {
+        return;
+    }
+
+    createTypingIndicator();
+}
+
+
+/* =========================================================
+   GENERATION END
+   ========================================================= */
+
+function onGenerationEnded() {
+
+    removeTypingIndicator(false);
+}
+
+
+/* =========================================================
+   GENERATION STOPPED
+   ========================================================= */
+
+function onGenerationStopped() {
+
+    removeTypingIndicator(false);
+}
+
+
+/* =========================================================
+   SETTINGS UI
+   ========================================================= */
+
+function createSettingsUI() {
+
+    const container =
+        document.querySelector(
+            '#extensions_settings'
+        );
+
+    if (!container) {
+
         console.warn(
-            `[${extension_name}] Panneau #extensions_settings introuvable.`
+            `[${EXTENSION_NAME}] ` +
+            '#extensions_settings introuvable.'
         );
 
         return;
     }
 
-    if (document.querySelector('#typing_indicator_settings')) {
+
+    /* Prevent duplicates */
+
+    if (
+        document.querySelector(
+            '#typing-indicator-settings'
+        )
+    ) {
         return;
     }
 
-    const settings_container = document.createElement('div');
 
-    settings_container.id = 'typing_indicator_settings';
-    settings_container.className = 'extension_container';
+    /* -----------------------------------------------------
+       Settings wrapper
+       ----------------------------------------------------- */
 
-    settings_container.innerHTML = `
+    const settings =
+        document.createElement('div');
+
+    settings.id =
+        'typing-indicator-settings';
+
+    settings.className =
+        'extension_container';
+
+
+    /* -----------------------------------------------------
+       HTML
+       ----------------------------------------------------- */
+
+    settings.innerHTML = `
+
         <div class="inline-drawer">
 
-            <div class="inline-drawer-toggle inline-drawer-header">
-                <b>💬 Typing Indicator</b>
+            <div
+                class="inline-drawer-toggle
+                       inline-drawer-header"
+            >
 
-                <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+                <b>Typing Indicator</b>
+
+                <div
+                    class="inline-drawer-icon
+                           fa-solid
+                           fa-circle-chevron-down
+                           down"
+                ></div>
+
             </div>
+
 
             <div class="inline-drawer-content">
 
-                <label class="checkbox_label">
+                <label
+                    class="checkbox_label"
+                    for="typing-indicator-enabled"
+                >
 
                     <input
-                        id="typing_indicator_enabled"
+                        id="typing-indicator-enabled"
                         type="checkbox"
                     >
 
                     <span>
-                        Activer le typing indicator iMessage
+                        Activer le typing indicator
                     </span>
 
                 </label>
 
-                <small>
-                    Affiche une bulle iMessage avec trois points animés
-                    pendant que le bot génère sa réponse.
-                </small>
+
+                <div
+                    style="
+                        margin-top: 6px;
+                        opacity: 0.65;
+                        font-size: 0.9em;
+                    "
+                >
+                    Affiche une bulle iMessage
+                    avec trois points animés
+                    pendant la génération du bot.
+                </div>
 
             </div>
 
         </div>
+
     `;
 
-    extensions_settings.appendChild(settings_container);
 
-    const enabled_checkbox = document.querySelector(
-        '#typing_indicator_enabled'
-    );
+    container.appendChild(settings);
 
-    enabled_checkbox.checked = is_enabled();
 
-    enabled_checkbox.addEventListener('change', () => {
-        extension_settings[extension_name].enabled =
-            enabled_checkbox.checked;
+    /* -----------------------------------------------------
+       Checkbox
+       ----------------------------------------------------- */
 
-        saveSettingsDebounced();
-
-        if (!enabled_checkbox.checked) {
-            remove_typing_indicator(true);
-        }
-
-        console.log(
-            `[${extension_name}] ${
-                enabled_checkbox.checked
-                    ? 'Activé'
-                    : 'Désactivé'
-            }`
+    const checkbox =
+        document.querySelector(
+            '#typing-indicator-enabled'
         );
-    });
+
+
+    checkbox.checked = isEnabled();
+
+
+    checkbox.addEventListener(
+        'change',
+        () => {
+
+            extension_settings[
+                EXTENSION_NAME
+            ].enabled = checkbox.checked;
+
+
+            saveSettingsDebounced();
+
+
+            if (!checkbox.checked) {
+
+                removeTypingIndicator(true);
+
+            }
+
+        }
+    );
 }
 
 
 /* =========================================================
-   GENERATION EVENTS
+   EVENT REGISTRATION
    ========================================================= */
 
-function register_generation_events() {
+function registerEvents() {
+
+    /* Generation started */
+
     if (event_types.GENERATION_STARTED) {
+
         eventSource.on(
             event_types.GENERATION_STARTED,
-            create_typing_indicator
+            onGenerationStarted
         );
+
     }
+
+
+    /* Generation ended */
 
     if (event_types.GENERATION_ENDED) {
+
         eventSource.on(
             event_types.GENERATION_ENDED,
-            remove_typing_indicator
+            onGenerationEnded
         );
+
     }
 
+
+    /* Generation stopped */
+
     if (event_types.GENERATION_STOPPED) {
+
         eventSource.on(
             event_types.GENERATION_STOPPED,
-            remove_typing_indicator
+            onGenerationStopped
         );
+
     }
+
 }
 
 
@@ -237,13 +536,16 @@ function register_generation_events() {
    ========================================================= */
 
 jQuery(async () => {
-    load_settings();
 
-    create_settings_ui();
+    loadSettings();
 
-    register_generation_events();
+    createSettingsUI();
+
+    registerEvents();
+
 
     console.log(
-        `[${extension_name}] Extension chargée avec succès.`
+        '[Typing Indicator] Extension loaded.'
     );
+
 });
