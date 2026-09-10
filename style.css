@@ -1,58 +1,33 @@
 /* =========================================================
-   TYPING INDICATOR
-   iMESSAGE STYLE
-   ========================================================= */
-
-
-/* =========================================================
-   CONTAINER
+   TYPING INDICATOR — iMESSAGE
    ========================================================= */
 
 #hydra-typing-indicator {
     position: relative;
 
-    width: 72px;
-    height: 55px;
+    width: 86px;
+    height: 61px;
 
-    margin: 8px 0 8px 12px;
-
+    margin: 8px 0 10px 12px;
     padding: 0;
 
     display: block;
 
     opacity: 0;
-
-    transform:
-        translateY(8px)
-        scale(0.82);
-
+    transform: scale(0.82) translateY(5px);
     transform-origin: left bottom;
 
     transition:
-        opacity 0.18s ease,
-        transform 0.28s cubic-bezier(
-            0.22,
-            1,
-            0.36,
-            1
-        );
+        opacity 0.16s ease-out,
+        transform 0.26s cubic-bezier(.22, 1, .36, 1);
 
     pointer-events: none;
-
     z-index: 50;
 }
 
-
-/* =========================================================
-   APPEAR
-   ========================================================= */
-
 #hydra-typing-indicator.visible {
     opacity: 1;
-
-    transform:
-        translateY(0)
-        scale(1);
+    transform: scale(1) translateY(0);
 }
 
 
@@ -63,10 +38,8 @@
 .hydra-typing-bubble {
     position: relative;
 
-    width: 72px;
-    height: 55px;
-
-    display: block;
+    width: 86px;
+    height: 61px;
 }
 
 
@@ -80,8 +53,8 @@
     left: 0;
     top: 0;
 
-    width: 72px;
-    height: 55px;
+    width: 86px;
+    height: 61px;
 
     display: block;
 
@@ -99,30 +72,25 @@
 
 
 /* =========================================================
-   THREE DOTS CONTAINER
+   THREE DOTS
    ========================================================= */
 
 .hydra-typing-dots {
     position: absolute;
 
-    left: 19px;
-    top: 19px;
+    left: 24px;
+    top: 21px;
 
-    width: 42px;
+    width: 43px;
     height: 12px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
     gap: 5px;
 }
 
-
-/* =========================================================
-   DOTS
-   ========================================================= */
 
 .hydra-typing-dot {
     width: 7px;
@@ -133,56 +101,41 @@
 
     border-radius: 50%;
 
-    background: #8e8e93;
+    background: #929297;
 
-    opacity: 0.35;
-
-    transform: scale(0.9);
+    opacity: .45;
 
     animation:
         hydra-imessage-dot
-        1.25s
+        1.35s
         infinite
         ease-in-out;
 }
 
 
-/* =========================================================
-   DOT 1
-   ========================================================= */
-
 .hydra-typing-dot.dot-1 {
     animation-delay: 0s;
 }
 
-
-/* =========================================================
-   DOT 2
-   ========================================================= */
-
 .hydra-typing-dot.dot-2 {
-    animation-delay: 0.16s;
+    animation-delay: .17s;
 }
-
-
-/* =========================================================
-   DOT 3
-   ========================================================= */
 
 .hydra-typing-dot.dot-3 {
-    animation-delay: 0.32s;
+    animation-delay: .34s;
 }
 
 
 /* =========================================================
-   iMESSAGE BLINKING ANIMATION
+   BLINK
    ========================================================= */
 
 @keyframes hydra-imessage-dot {
 
-    0% {
-        opacity: 0.35;
-        transform: scale(0.9);
+    0%,
+    100% {
+        opacity: .38;
+        transform: scale(.9);
     }
 
     18% {
@@ -191,13 +144,8 @@
     }
 
     36% {
-        opacity: 0.35;
-        transform: scale(0.9);
-    }
-
-    100% {
-        opacity: 0.35;
-        transform: scale(0.9);
+        opacity: .38;
+        transform: scale(.9);
     }
 }
 
@@ -212,11 +160,10 @@ body.dark-mode
     fill: #e5e5ea;
 }
 
-
 body.dark-mode
 #hydra-typing-indicator
 .hydra-typing-dot {
-    background: #8e8e93;
+    background: #929297;
 }
 
 
@@ -227,17 +174,16 @@ body.dark-mode
 @media screen and (max-width: 600px) {
 
     #hydra-typing-indicator {
-        width: 72px;
-        height: 55px;
+        width: 86px;
+        height: 61px;
 
         margin-left: 12px;
         margin-top: 7px;
-        margin-bottom: 8px;
+        margin-bottom: 9px;
     }
 
     .hydra-typing-svg {
-        width: 72px;
-        height: 55px;
+        width: 86px;
+        height: 61px;
     }
-
 }
