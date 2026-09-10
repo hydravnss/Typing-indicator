@@ -1,0 +1,12 @@
+{
+    "display_name": "Typing Indicator",
+    "loading_order": 100,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "Hydravnss",
+    "version": "1.0.0",
+    "homePage": "https://github.com/hydravnss/typing-indicator",
+    "auto_update": false
+}
