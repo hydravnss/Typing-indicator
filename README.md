@@ -1,0 +1,2 @@
+# Typing-indicator
+Sillytavern extension
