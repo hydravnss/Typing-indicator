@@ -1,6 +1,6 @@
 /* =========================================================
    TYPING INDICATOR
-   iMESSAGE — SMALL / COMPACT
+   iMESSAGE STYLE
    ========================================================= */
 
 
@@ -11,43 +11,40 @@
 #hydra-typing-indicator {
     position: relative;
 
-    /* Petit indicateur */
     width: 72px;
-    height: 48px;
+    height: 55px;
 
-    /* IMPORTANT :
-       il reste dans le flux du chat et apparaît
-       après le dernier message */
+    margin: 8px 0 8px 12px;
+
+    padding: 0;
+
     display: block;
-    clear: both;
 
-    margin-left: 12px;
-    margin-right: auto;
-
-    margin-top: 7px;
-    margin-bottom: 8px;
-
-    /* Animation d'apparition */
     opacity: 0;
 
     transform:
-        translateY(7px)
+        translateY(8px)
         scale(0.82);
 
     transform-origin: left bottom;
 
     transition:
-        opacity 0.18s ease-out,
-        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+        opacity 0.18s ease,
+        transform 0.28s cubic-bezier(
+            0.22,
+            1,
+            0.36,
+            1
+        );
 
     pointer-events: none;
 
-    z-index: 20;
+    z-index: 50;
 }
 
 
 /* =========================================================
-   APPEAR ANIMATION
+   APPEAR
    ========================================================= */
 
 #hydra-typing-indicator.visible {
@@ -60,21 +57,59 @@
 
 
 /* =========================================================
-   MAIN iMESSAGE BUBBLE
+   BUBBLE
    ========================================================= */
 
 .hydra-typing-bubble {
+    position: relative;
+
+    width: 72px;
+    height: 55px;
+
+    display: block;
+}
+
+
+/* =========================================================
+   SVG
+   ========================================================= */
+
+.hydra-typing-svg {
     position: absolute;
 
-    left: 8px;
+    left: 0;
     top: 0;
 
-    width: 63px;
-    height: 39px;
+    width: 72px;
+    height: 55px;
 
-    background: #e5e5ea;
+    display: block;
 
-    border-radius: 23px;
+    overflow: visible;
+}
+
+
+/* =========================================================
+   iMESSAGE SHAPE
+   ========================================================= */
+
+.hydra-typing-shape {
+    fill: #e5e5ea;
+}
+
+
+/* =========================================================
+   THREE DOTS CONTAINER
+   ========================================================= */
+
+.hydra-typing-dots {
+    position: absolute;
+
+    left: 19px;
+    top: 19px;
+
+    width: 42px;
+    height: 12px;
 
     display: flex;
 
@@ -82,78 +117,30 @@
     justify-content: center;
 
     gap: 5px;
-
-    box-sizing: border-box;
 }
 
 
 /* =========================================================
-   iMESSAGE TAIL
-   ========================================================= */
-
-.hydra-typing-tail-large {
-    position: absolute;
-
-    left: 7px;
-    top: 28px;
-
-    width: 17px;
-    height: 15px;
-
-    background: #e5e5ea;
-
-    border-radius:
-        0
-        0
-        0
-        15px;
-
-    transform: rotate(18deg);
-
-    z-index: -1;
-}
-
-
-/* =========================================================
-   SMALL ROUND DOT
-   ========================================================= */
-
-.hydra-typing-tail-small {
-    position: absolute;
-
-    left: 0;
-    bottom: 0;
-
-    width: 10px;
-    height: 10px;
-
-    background: #e5e5ea;
-
-    border-radius: 50%;
-}
-
-
-/* =========================================================
-   THREE DOTS
+   DOTS
    ========================================================= */
 
 .hydra-typing-dot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
 
-    min-width: 6px;
-    min-height: 6px;
+    min-width: 7px;
+    min-height: 7px;
 
     border-radius: 50%;
 
     background: #8e8e93;
 
-    opacity: 0.4;
+    opacity: 0.35;
 
     transform: scale(0.9);
 
     animation:
-        hydra-imessage-blink
+        hydra-imessage-dot
         1.25s
         infinite
         ease-in-out;
@@ -161,46 +148,56 @@
 
 
 /* =========================================================
-   DOT DELAYS
+   DOT 1
    ========================================================= */
 
 .hydra-typing-dot.dot-1 {
     animation-delay: 0s;
 }
 
-.hydra-typing-dot.dot-2 {
-    animation-delay: 0.17s;
-}
 
-.hydra-typing-dot.dot-3 {
-    animation-delay: 0.34s;
+/* =========================================================
+   DOT 2
+   ========================================================= */
+
+.hydra-typing-dot.dot-2 {
+    animation-delay: 0.16s;
 }
 
 
 /* =========================================================
-   iMESSAGE DOT BLINK
+   DOT 3
    ========================================================= */
 
-@keyframes hydra-imessage-blink {
+.hydra-typing-dot.dot-3 {
+    animation-delay: 0.32s;
+}
+
+
+/* =========================================================
+   iMESSAGE BLINKING ANIMATION
+   ========================================================= */
+
+@keyframes hydra-imessage-dot {
 
     0% {
         opacity: 0.35;
-        transform: scale(0.85);
+        transform: scale(0.9);
     }
 
-    20% {
+    18% {
         opacity: 1;
         transform: scale(1);
     }
 
-    40% {
+    36% {
         opacity: 0.35;
-        transform: scale(0.85);
+        transform: scale(0.9);
     }
 
     100% {
         opacity: 0.35;
-        transform: scale(0.85);
+        transform: scale(0.9);
     }
 }
 
@@ -211,20 +208,10 @@
 
 body.dark-mode
 #hydra-typing-indicator
-.hydra-typing-bubble,
-
-body.dark-mode
-#hydra-typing-indicator
-.hydra-typing-tail-large,
-
-body.dark-mode
-#hydra-typing-indicator
-.hydra-typing-tail-small {
-    background: #262628;
+.hydra-typing-shape {
+    fill: #e5e5ea;
 }
 
-
-/* Les points restent gris comme iMessage */
 
 body.dark-mode
 #hydra-typing-indicator
@@ -241,11 +228,16 @@ body.dark-mode
 
     #hydra-typing-indicator {
         width: 72px;
-        height: 48px;
+        height: 55px;
 
         margin-left: 12px;
-        margin-top: 6px;
+        margin-top: 7px;
         margin-bottom: 8px;
+    }
+
+    .hydra-typing-svg {
+        width: 72px;
+        height: 55px;
     }
 
 }
