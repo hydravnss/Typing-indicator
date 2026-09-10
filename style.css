@@ -1,0 +1,194 @@
+/* =========================================================
+   TYPING INDICATOR
+   iMessage Style
+   ========================================================= */
+
+#hydra-typing-indicator {
+    position: relative;
+
+    width: fit-content;
+    height: 64px;
+
+    margin-left: 14px;
+    margin-top: 8px;
+    margin-bottom: 10px;
+
+    opacity: 0;
+
+    transform:
+        translateY(8px)
+        scale(0.96);
+
+    transition:
+        opacity 0.15s ease,
+        transform 0.15s ease;
+
+    pointer-events: none;
+
+    z-index: 100;
+}
+
+
+/* =========================================================
+   VISIBLE
+   ========================================================= */
+
+#hydra-typing-indicator.visible {
+    opacity: 1;
+
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+
+/* =========================================================
+   MAIN BUBBLE
+   ========================================================= */
+
+.hydra-typing-bubble {
+    position: relative;
+
+    width: 94px;
+    height: 54px;
+
+    border-radius: 30px;
+
+    background: #e5e5ea;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 7px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   LARGE TAIL
+   ========================================================= */
+
+.hydra-typing-tail-large {
+    position: absolute;
+
+    left: 2px;
+    bottom: -4px;
+
+    width: 25px;
+    height: 24px;
+
+    background: #e5e5ea;
+
+    border-radius:
+        0
+        0
+        0
+        22px;
+
+    transform: rotate(18deg);
+}
+
+
+/* =========================================================
+   SMALL TAIL
+   ========================================================= */
+
+.hydra-typing-tail-small {
+    position: absolute;
+
+    left: -12px;
+    bottom: -15px;
+
+    width: 17px;
+    height: 17px;
+
+    background: #e5e5ea;
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   DOTS
+   ========================================================= */
+
+.hydra-typing-dot {
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: #8e8e93;
+
+    animation:
+        hydraTyping
+        1.4s
+        infinite
+        ease-in-out;
+}
+
+
+/* =========================================================
+   DOT DELAYS
+   ========================================================= */
+
+.hydra-typing-dot.dot-1 {
+    animation-delay: 0s;
+}
+
+.hydra-typing-dot.dot-2 {
+    animation-delay: 0.15s;
+}
+
+.hydra-typing-dot.dot-3 {
+    animation-delay: 0.3s;
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes hydraTyping {
+
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+        opacity: 0.55;
+    }
+
+    30% {
+        transform: translateY(-3px);
+        opacity: 1;
+    }
+}
+
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+body.dark-mode
+#hydra-typing-indicator
+.hydra-typing-bubble,
+
+body.dark-mode
+#hydra-typing-indicator
+.hydra-typing-tail-large,
+
+body.dark-mode
+#hydra-typing-indicator
+.hydra-typing-tail-small {
+    background: #262628;
+}
+
+
+body.dark-mode
+#hydra-typing-indicator
+.hydra-typing-dot {
+    background: #8e8e93;
+}
